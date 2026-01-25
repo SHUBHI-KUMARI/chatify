@@ -18,12 +18,14 @@ const PORT = ENV.PORT || 3000;
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 
 // Health Check
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "OK", message: "Server is healthy" });
 });
+
+//cors
 
 // Routes
 app.use("/api/auth", authRoutes);
