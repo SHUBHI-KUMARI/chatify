@@ -7,18 +7,22 @@ import { ENV } from "./lib/env.js";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { connectDB } from "./lib/db.js";
+import { app, server } from "./lib/socket.js";
 
 dotenv.config();
-
-const app = express();
 
 const __dirname = path.resolve();
 const PORT = ENV.PORT || 3000;
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: "5mb" }));
 app.use(cookieParser());
-app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+app.use(
+  cors({
+    origin: ENV.CLIENT_URL,
+    credentials: true,
+  })
+);
 
 // Health Check
 app.get("/api/health", (req, res) => {
@@ -41,7 +45,7 @@ if (ENV.NODE_ENV === "production") {
   });
 }
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log("Server running on port: " + PORT);
   connectDB();
 });
